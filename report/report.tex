@@ -1,0 +1,122 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{hyperref}
+\usepackage{geometry}
+\geometry{a4paper, margin=2cm}
+
+\title{Informe de Solución: Planificación de Horarios}
+\author{Jackson C. Vera Pineda - estudiante de $4^{to}$ año, Ciencia de la Computación, \\
+		facultad de Matemática y Computación, Universidad de La Habana\\\\
+		Massiel Paz Otaño - estudiante de $4^{to}$ año, Ciencia de la Computación, \\
+		facultad de Matemática y Computación, Universidad de La Habana}
+
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introducción}
+Este informe aborda el problema de la planificación de horarios, un problema clásico de optimización combinatoria con múltiples restricciones. El objetivo es diseñar un horario que minimice conflictos, maximice el uso eficiente de recursos y satisfaga las preferencias de los estudiantes y profesores. A continuación, se presenta la formalización del problema, los subproblemas clave, estrategias de solución, análisis de complejidad y demostraciones de correctitud.
+
+\section{Formalización del Problema}
+El problema se modela como un problema de optimización combinatoria con restricciones duras y blandas. A continuación, se definen los conjuntos, variables, restricciones y función objetivo.
+
+\subsection{Conjuntos y Variables}
+\begin{itemize}
+    \item \( C = \{c_1, c_2, ..., c_n\} \): Conjunto de cursos/clases.
+    \item \( P = \{p_1, p_2, ..., p_m\} \): Conjunto de profesores.
+    \item \( S = \{s_1, s_2, ..., s_k\} \): Conjunto de estudiantes.
+    \item \( R = \{r_1, r_2, ..., r_l\} \): Conjunto de aulas/recursos.
+    \item \( T = \{t_1, t_2, ..., t_q\} \): Conjunto de franjas horarias.
+    \item \( x_{c, r, t} \in \{0, 1\} \): Variable binaria que indica si la clase \( c \) se asigna al aula \( r \) en el tiempo \( t \).
+    \item \( y_{p, c} \in \{0, 1\} \): Variable binaria que indica si el profesor \( p \) está asignado a la clase \( c \).
+\end{itemize}
+
+\subsection{Restricciones}
+\begin{itemize}
+    \item \textbf{No superposición}: 
+        \[
+        \sum_{c \in C} x_{c, r, t} \leq 1 \quad \forall r \in R, t \in T
+        \]
+    \item \textbf{Disponibilidad de profesores}:
+        \[
+        \sum_{c \in C} y_{p, c} \cdot x_{c, r, t} \leq 1 \quad \forall p \in P, t \in T
+        \]
+    \item \textbf{Aforo}:
+        \[
+        \text{Capacidad}(r) \geq \text{Estudiantes}(c) \quad \text{si } x_{c, r, t} = 1
+        \]
+\end{itemize}
+
+\subsection{Función Objetivo}
+\[
+\text{Minimizar } \alpha \cdot (\text{Conflictos}) + \beta \cdot (\text{Subutilización de aulas}) + \gamma \cdot (\text{Preferencias insatisfechas})
+\]
+
+\section{Subproblemas Clave y Estrategias de Solución}
+\subsection{Subproblema 1: Asignación de Profesores sin Conflictos}
+\begin{itemize}
+    \item \textbf{Formalización}: Asignar cada clase a un profesor sin superposiciones.
+    \item \textbf{Estrategia}: Modelar como un problema de emparejamiento en grafos bipartitos.
+    \item \textbf{Algoritmo}: Algoritmo húngaro.
+    \item \textbf{Correctitud}: Garantiza una asignación óptima en tiempo polinomial.
+    \item \textbf{Complejidad}: \( O(m^3) \).
+\end{itemize}
+
+\subsection{Subproblema 2: Programación de Clases en Aulas y Horarios}
+\begin{itemize}
+    \item \textbf{Formalización}: Asignar \( (c, r, t) \) sin violar restricciones duras.
+    \item \textbf{Estrategia}: Modelar como un problema de coloración de grafos.
+    \item \textbf{Algoritmo}: Heurística greedy con ordenamiento por grado de conflicto.
+    \item \textbf{Correctitud}: Encuentra una coloración con \( \leq k+1 \) colores.
+    \item \textbf{Complejidad}: \( O(n^2) \).
+\end{itemize}
+
+\subsection{Subproblema 3: Manejo de Preferencias de Estudiantes}
+\begin{itemize}
+    \item \textbf{Formalización}: Optimizar restricciones blandas.
+    \item \textbf{Estrategia}: Programación lineal entera (ILP) con relajación Lagrangiana.
+    \item \textbf{Complejidad}: NP-Hard, pero relajaciones aproximadas en \( O(n^3) \).
+\end{itemize}
+
+\subsection{Subproblema 4: Condiciones Aleatorias (Eventos Imprevistos)}
+\begin{itemize}
+    \item \textbf{Formalización}: Replanificar ante cancelaciones de clases.
+    \item \textbf{Estrategia}: Algoritmos online con ventanas deslizantes.
+    \item \textbf{Análisis competitivo}: Cota de rendimiento frente al óptimo offline.
+\end{itemize}
+
+\section{Demostración de NP-Hardness}
+El problema se reduce al problema de coloración de grafos (Graph Coloring), que es NP-Completo.\\
+\textbf{Reducción}
+\begin{itemize}
+    \item Construir un grafo $G$ donde cada nodo representa una clase $c$.
+    \item Crear una arista entre dos nodos si comparten: mismo profesor, estudiantes en común (evitar superposición), y/o requisitos de aula especializada.
+    \item Asignar colores (pares $(r,t)$) a los nodos
+\end{itemize}
+Por lo tanto, Si podemos resolver la planificación de horarios en tiempo polinomial, entonces podemos resolver Graph Coloring en tiempo polinomial, lo cual es imposible a menos que $P = NP$.
+
+\section{Cotas Mínimas y Análisis de Complejidad}
+\begin{itemize}
+    \item \textbf{Cota inferior para el problema general}: cualquier algoritmo exacto requiere \( \Omega(2^n) \) en el peor caso (por la reducción a Graph Coloring).
+    \item \textbf{Algoritmos de aproximación}: No se puede aproximar mejor que \( O(n^{1-\epsilon}) \) a menos que \( P = NP \).
+\end{itemize}
+
+\section{Estrategias de Solución Parcial/Total}
+\begin{itemize}
+    \item \textbf{Algoritmos Greedy}: Asignar primero las clases con mayor restricciones.
+    \item \textbf{Algoritmos de Aproximación}: ILP con relajación lineal.
+    \item \textbf{Metaheurísticas}: Algoritmos genéticos o simulated annealing.
+\end{itemize}
+
+\section{Conclusión}
+Este informe ha presentado un enfoque estructurado para resolver el problema de planificación de horarios, demostrando su naturaleza NP-Hard y proponiendo estrategias para abordar subproblemas con análisis de complejidad y correctitud. Se recomienda implementar soluciones parciales usando enfoques híbridos o metaheurísticas para instancias grandes.
+
+\end{document}
