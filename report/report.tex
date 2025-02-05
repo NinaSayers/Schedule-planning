@@ -25,6 +25,45 @@
 \section{Introducción}
 Este informe aborda el problema de la planificación de horarios, un problema clásico de optimización combinatoria con múltiples restricciones. El objetivo es diseñar un horario que minimice conflictos, maximice el uso eficiente de recursos y satisfaga las preferencias de los estudiantes y profesores. A continuación, se presenta la formalización del problema, los subproblemas clave, estrategias de solución, análisis de complejidad y demostraciones de correctitud.
 
+\section{Demostración de NP-Completitud}
+\begin{itemize}
+    \item[\textbf{a)}] \textbf{Pertenece a NP}\\
+    Una solución propuesta (un horario con asignaciones de aulas, profesores y tiempos) puede verificarse en tiempo polinomial:
+    \begin{itemize}
+        \item Comprobar que no hay superposiciones de clases en el mismo aula.
+        \item Verificar que los profesores no están asignados a dos clases simultáneamente.
+        \item Asegurar que se respetan las preferencias de estudiantes y disponibilidades de recursos.
+    \end{itemize}
+    Estas verificaciones requieren tiempo proporcional al número de actividades y restricciones, por lo que \textbf{está en NP}.
+    \item[\textbf{b)}] \textbf{Es NP-Hard: reducción desde un problema \textbf{NP-Completo}}\\
+    Para demostrar que es NP-Hard, reducimos un problema ya conocido como NP-Completo al problema escolar. Usaremos Graph Coloring (coloración de grafos), que es NP-Completo.
+    \begin{itemize}
+        \item \textbf{Graph Coloring}: Dado un grafo $G = (V, E)$ y $k$ colores, ¿pueden asignarse colores a los nodos de modo que nodos adyacentes no compartan el mismo color?
+        \item \textbf{Reducción al problema escolar}:
+        \begin{itemize}
+            \item \textbf{Nodos del grafo}: Representan clases o exámenes.
+            \item \textbf{Aristas del grafo}: Representan conflictos (ejemplo: dos clases que no pueden ocurrir al mismo tiempo).
+            \item \textbf{Colores}: Representan bloques de tiempo (horas/días) en el horario.
+            \item \textbf{Condiciones adicionales}:
+            \begin{itemize}
+                \item Aulas como "colores secundarios" (cada color de tiempo debe asignarse a un aula disponible).
+                \item Profesores como restricciones de color (un profesor no puede estar en dos clases simultáneas).
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+    Si podemos resolver el problema escolar, automáticamente resolvemos Graph Coloring. Como Graph Coloring es NP-Completo, el problema escolar es NP-Hard.
+\end{itemize}
+Por tanto, dado que el problema de planificación de horarios (escolar) está en NP y es NP-Hard, podemos concluir que es NP-Completo
+
+El problema se reduce al problema de coloración de grafos (Graph Coloring), que es NP-Completo.\\
+\textbf{Reducción}
+\begin{itemize}
+    \item Construir un grafo $G$ donde cada nodo representa una clase $c$.
+    \item Crear una arista entre dos nodos si comparten: mismo profesor, estudiantes en común (evitar superposición), y/o requisitos de aula especializada.
+    \item Asignar colores (pares $(r,t)$) a los nodos
+\end{itemize}
+Por lo tanto, Si podemos resolver la planificación de horarios en tiempo polinomial, entonces podemos resolver Graph Coloring en tiempo polinomial, lo cual es imposible a menos que $P = NP$.
+
 \section{Formalización del Problema}
 El problema se modela como un problema de optimización combinatoria con restricciones duras y blandas. A continuación, se definen los conjuntos, variables, restricciones y función objetivo.
 
@@ -92,16 +131,6 @@ El problema se modela como un problema de optimización combinatoria con restric
     \item \textbf{Estrategia}: Algoritmos online con ventanas deslizantes.
     \item \textbf{Análisis competitivo}: Cota de rendimiento frente al óptimo offline.
 \end{itemize}
-
-\section{Demostración de NP-Hardness}
-El problema se reduce al problema de coloración de grafos (Graph Coloring), que es NP-Completo.\\
-\textbf{Reducción}
-\begin{itemize}
-    \item Construir un grafo $G$ donde cada nodo representa una clase $c$.
-    \item Crear una arista entre dos nodos si comparten: mismo profesor, estudiantes en común (evitar superposición), y/o requisitos de aula especializada.
-    \item Asignar colores (pares $(r,t)$) a los nodos
-\end{itemize}
-Por lo tanto, Si podemos resolver la planificación de horarios en tiempo polinomial, entonces podemos resolver Graph Coloring en tiempo polinomial, lo cual es imposible a menos que $P = NP$.
 
 \section{Cotas Mínimas y Análisis de Complejidad}
 \begin{itemize}
