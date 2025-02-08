@@ -367,10 +367,95 @@ El problema se modela como un problema de optimización combinatoria con restric
 \end{itemize}
 
 \subsection{Subproblema 3: Manejo de Preferencias de Estudiantes}
+
+\subsubsection*{Formalización}
+El problema se modela como un sistema de optimización con restricciones blandas:
+
 \begin{itemize}
-    \item \textbf{Formalización}: Optimizar restricciones blandas.
-    \item \textbf{Estrategia}: Programación lineal entera (ILP) con relajación Lagrangiana.
-    \item \textbf{Complejidad}: NP-Hard, pero relajaciones aproximadas en \( O(n^3) \).
+    \item \textbf{Variables de decisión}:
+    \begin{align*}
+        x_{c,t,r} &\in \{0, 1\} \quad \text{(Clase $c$ asignada a horario $t$ y aula $r$)} \\
+        y_{s,c} &\in \{0, 1\} \quad \text{(Estudiante $s$ matriculado en clase $c$)}
+    \end{align*}
+    
+    \item \textbf{Función objetivo}:
+    \[
+    \text{Minimizar} \quad \underbrace{\sum_{s,c} w_{s,c} \cdot (1 - y_{s,c})}_{\text{Preferencias estudiantiles}} + \underbrace{\sum_{c,t,r} p_{c,t,r} \cdot x_{c,t,r}}_{\text{Penalizaciones de horario/aula}}
+    \]
+    
+    \item \textbf{Restricciones blandas}:
+    \begin{itemize}
+        \item Preferencias de horarios (ej.: evitar clases tempranas)
+        \item Proximidad entre aulas para clases relacionadas
+        \item Balance de carga académica por estudiante
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Estrategia}
+\textbf{Programación Lineal Entera (ILP) con Relajación Lagrangiana}:
+\begin{itemize}
+    \item \textbf{Paso 1}: Modelar restricciones duras como ecuaciones lineales
+    \[
+    \sum_{t,r} x_{c,t,r} = 1 \quad \forall c \quad \text{(Asignación única por clase)}
+    \]
+    
+    \item \textbf{Paso 2}: Relajar restricciones blandas mediante multiplicadores $\lambda_k$:
+    \[
+    \text{Minimizar} \quad \sum_{s,c} w_{s,c}(1 - y_{s,c}) + \sum_{k} \lambda_k \cdot g_k(x,y)
+    \]
+    donde $g_k(x,y)$ mide la violación de la restricción blanda $k$.
+    
+    \item \textbf{Paso 3}: Resolver iterativamente:
+    \begin{itemize}
+        \item Optimizar $(x,y)$ con $\lambda$ fijo (subproblema convexo)
+        \item Actualizar $\lambda$ usando métodos de subgradiente
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Correctitud}
+\begin{itemize}
+    \item \textbf{Dualidad Débil}: El valor dual proporciona cota inferior del óptimo real
+    \[
+    L(\lambda) \leq \text{Valor óptimo ILP} \quad \forall \lambda \geq 0
+    \]
+    
+    \item \textbf{Convergencia}: Bajo condiciones de Slater, existe $\lambda^*$ donde:
+    \[
+    \lim_{k \to \infty} L(\lambda_k) = \text{Valor óptimo dual}
+    \]
+\end{itemize}
+
+\subsubsection*{Complejidad}
+\begin{itemize}
+    \item \textbf{Problema original}: NP-Hard (debido a variables enteras)
+    
+    \item \textbf{Relajación Lagrangiana}:
+    \begin{itemize}
+        \item Cada iteración: $O(n^3)$ para resolver subproblema
+        \item Convergencia en $O(1/\epsilon^2)$ iteraciones para precisión $\epsilon$
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Ejemplo de Aplicación}
+Para un estudiante que evita viernes por la tarde:
+\begin{itemize}
+    \item \textbf{Restricción blanda}: $\sum_{t \in \text{Viernes-Tarde}} x_{c,t,r} \leq 0$
+    \item \textbf{Penalización}: $\lambda \cdot \max(0, \sum x_{c,t,r})$
+\end{itemize}
+
+\subsubsection*{Ventajas y Limitaciones}
+\begin{itemize}
+    \item \textbf{Ventajas}:
+    \begin{itemize}
+        \item Flexibilidad para múltiples tipos de preferencias
+        \item Escalable con optimizadores como CPLEX/Gurobi
+    \end{itemize}
+    
+    \item \textbf{Limitaciones}:
+    \begin{itemize}
+        \item No garantiza optimalidad global
+        \item Sensible a la inicialización de $\lambda$
+    \end{itemize}
 \end{itemize}
 
 \subsection{Subproblema 4: Condiciones Aleatorias (Eventos Imprevistos)}
