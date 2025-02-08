@@ -7,6 +7,7 @@
 \usepackage{algpseudocode}
 \usepackage{hyperref}
 \usepackage{geometry}
+
 \geometry{a4paper, margin=2cm}
 
 \title{Informe de Solución: Planificación de Horarios}
@@ -138,11 +139,95 @@ El problema se modela como un problema de optimización combinatoria con restric
 \section{Subproblemas Clave y Estrategias de Solución}
 \subsection{Subproblema 1: Asignación de Profesores sin Conflictos}
 \begin{itemize}
-    \item \textbf{Formalización}: Asignar cada clase a un profesor sin superposiciones.
     \item \textbf{Estrategia}: Modelar como un problema de emparejamiento en grafos bipartitos.
-    \item \textbf{Algoritmo}: Algoritmo húngaro.
-    \item \textbf{Correctitud}: Garantiza una asignación óptima en tiempo polinomial.
-    \item \textbf{Complejidad}: \( O(m^3) \).
+    \item \textbf{Formalización}:
+    El problema se modela como un grafo bipartito ponderado $G=(T\cup C,E)$ donde:
+    \begin{itemize}
+        \item$T:$ Conjunto de profesores (nodos en una partición).
+        \item$C:$ Conjunto de clases (nodos en la otra partición).
+        \item$E:$ Aristas que conectan profesores $t_i$ con clases $c_j$, con pesos $w_{ij}$ que representa el costo de asignar $c_j$ a $t_i$. Si un profesor no puede asignar una clase (por superposición de horarios o falta de disponibilidad), $w_{ij} = \infty$.
+    \end{itemize}
+    \textbf{Objetivo}: Encontrar un \textbf{emparejamiento perfecto} (asignar cada clase a un profesor y viceversa) que minimice el costo total, garantizando que ningún profesor tenga clases superpuestas y viceversa.
+    \item \textbf{Algoritmo}: Algoritmo húngaro.\\
+    \textbf{Pasos}:
+    \begin{itemize}
+        \item[1.] \textbf{Reducción de filas y columnas}: Restar el mínimo de cada fila y luego de cada columna.
+        \item[2.] \textbf{Cubrir ceros}: Usar el mínimo de líneas para cubrir todos los ceros en matriz reducida.
+        \item[3.] \textbf{Ajustes de costos}:
+        \begin{itemize}
+            \item Si el número de líneas es igual al de la matriz, se ha encontrado una asignación óptima.
+            \item De lo contrario, encontrar el elemento mínimo no cubierto, restárselo a las filas no cubiertas, y sumarlo a las columnas cubiertas. Volver al paso 2.
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{Pseudocódigo}:
+    \begin{verbatim}
+    Entrada: Matriz de costo n x n (cost).
+    Salida: Asignaciones óptimas (match).
+    
+    1. Inicializar etiquetas para filas (u) y columnas (v)
+    2. Para cada fila i:
+        - u[i] = min(cost[i][j]) para toda j.
+    3. Para cada columna j:
+        - v[j] = min(cost[i][j] - u[i]) para toda i.
+    4. Usar BFS/DFS para encontrar emparejamientos perfectos.
+    5. Repetir hasta encontrar el emparejamiento.
+    \end{verbatim}
+    \item \textbf{Correctitud}: \\
+    Este algoritmo garantiza una asignación óptima debido a:
+    \begin{itemize}
+        \item \textbf{Teorema de Köning}: Establece que en grafos bipartitos, el tamaño del máximo apareamiento es igual al mínimo número de nodos necesarios para cubrir todas las aristas.
+        \item \textbf{Optimalidad}: Cada iteración reduce el costo total potencial hasta alcanzar un apareamiento perfecto con costo mínimo.
+    \end{itemize}
+    \item \textbf{Complejidad}:\\
+    La complejidad es $O(n^3)$, donde $n$ es el número de nodos (clases o profesores, el que sea mayor). Esto se debe a las operaciones de reducción y ajuste iterativo en la matriz de costos.
+    \item \textbf{Implementación en Python}:\\
+    La biblioteca \textit{scipy} ofrece una implementación eficiente del algoritmo. 
+    \begin{verbatim}
+    import numpy as np
+    from scipy.optimize import linear_sum_assignment
+    import time
+    
+    # Matriz de costos (filas: profesores, columnas: clases)
+    # cost[i][j] = costo de asignar la clase j al profesor i
+    cost = np.array([
+        [3, 1, 2],
+        [2, 4, 3],
+        [3, 2, 1]
+    ])
+    
+    # Medir el tiempo de inicio
+    start_time = time.time()
+    
+    # Aplicar el Algoritmo Húngaro
+    row_ind, col_ind = linear_sum_assignment(cost)
+    
+    # Medir el tiempo de fin
+    end_time = time.time()
+    
+    # Calcular el tiempo de ejecución
+    execution_time = end_time - start_time
+    
+    # Asignaciones óptimas
+    for teacher, class_idx in zip(row_ind, col_ind):
+        print(f"Profesor {teacher} -> Clase {class_idx} (Costo: {cost[teacher][class_idx]})")
+    
+    # Costo total
+    print("Costo total:", cost[row_ind, col_ind].sum())
+    
+    # Imprimir el tiempo de ejecución
+    print(f"Tiempo de ejecución: {execution_time:.6f} segundos")
+    
+    \end{verbatim}
+    
+    \textbf{Salida}:
+    \begin{verbatim}
+    Profesor 0 -> Clase 1 (Costo: 1)
+    Profesor 1 -> Clase 0 (Costo: 2)
+    Profesor 2 -> Clase 2 (Costo: 1)
+    Costo total: 4
+    Tiempo de ejecución: 0.000000 segundos
+    \end{verbatim}
+    
 \end{itemize}
 
 \subsection{Subproblema 2: Programación de Clases en Aulas y Horarios}
