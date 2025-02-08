@@ -76,9 +76,20 @@ El problema se modela como un problema de optimización combinatoria con restric
     \item \( T = \{t_1, t_2, ..., t_q\} \): Conjunto de franjas horarias.
     \item \( x_{c, r, t} \in \{0, 1\} \): Variable binaria que indica si la clase \( c \) se asigna al aula \( r \) en el tiempo \( t \).
     \item \( y_{p, c} \in \{0, 1\} \): Variable binaria que indica si el profesor \( p \) está asignado a la clase \( c \).
+    \item \( z_{s, c_1, c_2, t} \in \{0, 1\} \) (solo para versión lineal): Variable auxiliar que indica conflicto para el estudiante \( s \) entre \( c_1 \) y \( c_2 \) en tiempo \( t \).
 \end{itemize}
 
-\subsection{Restricciones}
+\subsection{Parámetros}
+\begin{itemize}
+    \item \( E_s \subseteq C \): Clases inscritas por el estudiante \( s \in S \).
+    \item \( \text{Capacidad}(r) \in \mathbb{N} \): Capacidad máxima del aula \( r \).
+    \item \( \text{Estudiantes}(c) \in \mathbb{N} \): Número de estudiantes en la clase \( c \).
+    \item \( \text{Preferencia}_{s,c,t} \in \{0, 1\} \): Preferencia del estudiante \( s \) por la clase \( c \) en tiempo \( t \).
+    \item \( \alpha, \beta, \gamma \geq 0 \): Pesos para conflictos, subutilización y preferencias respectivamente.
+\end{itemize}
+
+
+\subsection{Restricciones Duras}
 \begin{itemize}
     \item \textbf{No superposición}: 
         \[
@@ -90,14 +101,39 @@ El problema se modela como un problema de optimización combinatoria con restric
         \]
     \item \textbf{Aforo}:
         \[
-        \text{Capacidad}(r) \geq \text{Estudiantes}(c) \quad \text{si } x_{c, r, t} = 1
+        x_{c, r, t} = 1 \implies \text{Capacidad}(r) \geq \text{Estudiantes}(c) \quad \forall c \in C, r \in R, t \in T
         \]
 \end{itemize}
 
-\subsection{Función Objetivo}
+\subsection{Restricciones Blandas y Función Objetivo}
+\subsubsection{Versión Cuadrática (Original)}
 \[
-\text{Minimizar } \alpha \cdot (\text{Conflictos}) + \beta \cdot (\text{Subutilización de aulas}) + \gamma \cdot (\text{Preferencias insatisfechas})
+\begin{aligned}
+\text{Minimizar } & \alpha \cdot \underbrace{\sum_{s \in S} \sum_{\substack{c_1, c_2 \in E_s \\ c_1 < c_2}} \sum_{t \in T} \left(\sum_{r_1} x_{c_1, r_1, t}\right)\left(\sum_{r_2} x_{c_2, r_2, t}\right)}_{\text{Conflictos}} \\
+& + \beta \cdot \underbrace{\sum_{c, r, t} x_{c, r, t} \cdot \left(\text{Capacidad}(r) - \text{Estudiantes}(c)\right)}_{\text{Subutilización}} \\
+& + \gamma \cdot \underbrace{\sum_{s, c \in E_s} \sum_{r, t} x_{c, r, t} \cdot \left(1 - \text{Preferencia}_{s,c,t}\right)}_{\text{Preferencias insatisfechas}}
+\end{aligned}
 \]
+
+\subsubsection{Versión Linealizada}
+\begin{itemize}
+    \item \textbf{Restricciones adicionales}:
+    \[
+    \begin{cases}
+    z_{s, c_1, c_2, t} \geq \sum_{r_1} x_{c_1, r_1, t} + \sum_{r_2} x_{c_2, r_2, t} - 1 & \forall s, c_1 < c_2 \in E_s, t \\
+    z_{s, c_1, c_2, t} \leq \sum_{r} x_{c_1, r, t} & \forall s, c_1 < c_2 \in E_s, t \\
+    z_{s, c_1, c_2, t} \leq \sum_{r} x_{c_2, r, t} & \forall s, c_1 < c_2 \in E_s, t
+    \end{cases}
+    \]
+    
+    \item \textbf{Función Objetivo Lineal}:
+    \[
+    \begin{aligned}
+    \text{Minimizar } & \alpha \cdot \underbrace{\sum_{s, c_1 < c_2 \in E_s} \sum_{t} z_{s, c_1, c_2, t}}_{\text{Conflictos (lineal)}} \\
+    & + \beta \cdot \text{Subutilización} + \gamma \cdot \text{Preferencias insatisfechas}
+    \end{aligned}
+    \]
+\end{itemize}
 
 \section{Subproblemas Clave y Estrategias de Solución}
 \subsection{Subproblema 1: Asignación de Profesores sin Conflictos}

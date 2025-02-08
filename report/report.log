@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.6.1)  4 FEB 2025 23:00
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.6.1)  7 FEB 2025 21:10
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -498,7 +498,7 @@ ci^^Son de gra-fos), que es NP-Completo.
 [1
 
 {C:/Users/Massy/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}] [2]
-[3] [4] (report.aux
+[3] [4] [5] (report.aux
 LaTeX Info: Redefining \. on input line 11.
 LaTeX Info: Redefining \% on input line 11.
 )
@@ -506,33 +506,43 @@ LaTeX Info: Redefining \% on input line 11.
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-04>
  ***********
-Package rerunfilecheck Info: File `report.out' has not changed.
-(rerunfilecheck)             Checksum: D90CACA9A8B6DFE1B3C40ECABDAA72BD;3229.
+
+
+Package rerunfilecheck Warning: File `report.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `report.out':
+(rerunfilecheck)             Before: D90CACA9A8B6DFE1B3C40ECABDAA72BD;3229
+(rerunfilecheck)             After:  F40FF86B04919829F4AA558DFC7219FE;3902.
  ) 
 Here is how much of TeX's memory you used:
- 12294 strings out of 474486
- 192214 string characters out of 5743756
- 1939542 words of memory out of 5000000
- 34404 multiletter control sequences out of 15000+600000
+ 12306 strings out of 474486
+ 192435 string characters out of 5743756
+ 1941542 words of memory out of 5000000
+ 34412 multiletter control sequences out of 15000+600000
  567169 words of font info for 71 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,8n,79p,545b,718s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,19n,79p,545b,718s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\Massy\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm
 1200.pk><C:/Users/Massy/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfon
 ts/cm/cmbx12.pfb><C:/Users/Massy/AppData/Local/Programs/MiKTeX/fonts/type1/publ
 ic/amsfonts/cm/cmex10.pfb><C:/Users/Massy/AppData/Local/Programs/MiKTeX/fonts/t
 ype1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Massy/AppData/Local/Programs/MiKTe
 X/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/Massy/AppData/Local/Progr
-ams/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/Massy/AppData/Loc
-al/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/Massy/App
-Data/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Users/M
-assy/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/
-Users/Massy/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10
-.pfb><C:/Users/Massy/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/
-cm/cmsy8.pfb>
-Output written on report.pdf (4 pages, 142520 bytes).
+ams/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/Massy/AppData/Loc
+al/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/Massy/App
+Data/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/M
+assy/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:
+/Users/Massy/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.
+pfb><C:/Users/Massy/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/c
+m/cmr8.pfb><C:/Users/Massy/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
+fonts/cm/cmsy10.pfb><C:/Users/Massy/AppData/Local/Programs/MiKTeX/fonts/type1/p
+ublic/amsfonts/cm/cmsy8.pfb><C:/Users/Massy/AppData/Local/Programs/MiKTeX/fonts
+/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on report.pdf (5 pages, 175018 bytes).
 PDF statistics:
- 139 PDF objects out of 1000 (max. 8388607)
- 19 named destinations out of 1000 (max. 500000)
+ 161 PDF objects out of 1000 (max. 8388607)
+ 23 named destinations out of 1000 (max. 500000)
  113 words of extra memory for PDF output out of 10000 (max. 10000000)
 
