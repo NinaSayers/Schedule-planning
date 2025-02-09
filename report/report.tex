@@ -459,10 +459,96 @@ Para un estudiante que evita viernes por la tarde:
 \end{itemize}
 
 \subsection{Subproblema 4: Condiciones Aleatorias (Eventos Imprevistos)}
+
+\subsubsection*{Formalización}
+Sea \( \mathcal{S}_t \) el horario vigente en el tiempo \( t \), y \( \mathcal{C} \subseteq \mathcal{S}_t \) un conjunto de clases canceladas. El problema se define como:
 \begin{itemize}
-    \item \textbf{Formalización}: Replanificar ante cancelaciones de clases.
-    \item \textbf{Estrategia}: Algoritmos online con ventanas deslizantes.
-    \item \textbf{Análisis competitivo}: Cota de rendimiento frente al óptimo offline.
+    \item \textbf{Entrada}:
+    \begin{itemize}
+        \item Horario actual \( \mathcal{S}_t \)
+        \item Clases canceladas \( \mathcal{C} \)
+        \item Recursos disponibles \( \mathcal{R} \) (aulas, profesores, horarios libres)
+    \end{itemize}
+    
+    \item \textbf{Salida}: Nuevo horario \( \mathcal{S}_{t+1} \) que:
+    \begin{itemize}
+        \item Reubica las clases en \( \mathcal{S}_t \setminus \mathcal{C} \)
+        \item Asigna nuevas clases pendientes (si existen)
+        \item Minimiza cambios respecto a \( \mathcal{S}_t \)
+    \end{itemize}
+    
+    \item \textbf{Restricciones}:
+    \begin{itemize}
+        \item No violar disponibilidad de profesores/aulas en \( \mathcal{S}_{t+1} \)
+        \item Mantener secuencia lógica de clases (ej.: prerrequisitos)
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Estrategia}
+\textbf{Algoritmos online con ventanas deslizantes}:
+\begin{itemize}
+    \item \textbf{Ventana de replanificación}: Reoptimizar solo en un intervalo \( [t, t+k] \) (ej.: próximos 3 días).
+    \item \textbf{Pasos}:
+    \begin{enumerate}
+        \item Fijar asignaciones no afectadas por \( \mathcal{C} \) en \( \mathcal{S}_t \setminus [t, t+k] \)
+        \item Resolver el subproblema restringido a \( [t, t+k] \) usando:
+        \begin{itemize}
+            \item Algoritmos de reoptimización local (ej.: búsqueda tabú)
+            \item Ajuste incremental de horarios
+        \end{itemize}
+        \item Actualizar \( \mathcal{S}_{t+1} \) manteniendo estabilidad global
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection*{Análisis Competitivo}
+Sea \( \text{OPT}_{\text{offline}} \) el costo óptimo de replanificar con conocimiento total del futuro. Un algoritmo online es \( c \)-competitivo si:
+\[
+\text{Costo}(\mathcal{S}_{t+1}) \leq c \cdot \text{OPT}_{\text{offline}} + b
+\]
+donde \( b \geq 0 \) es una constante.
+
+\begin{itemize}
+    \item \textbf{Cota para ventanas deslizantes}: 
+    \begin{itemize}
+        \item Si \( k \) es el tamaño de la ventana, el algoritmo es \( (2 - \frac{1}{k}) \)-competitivo para problemas de scheduling con costos aditivos.
+        \item Demostración: Usando el método de potenciales y comparación fase por fase.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Complejidad}
+\begin{itemize}
+    \item \textbf{Tiempo por iteración}: \( O(m \cdot k^2) \), donde:
+    \begin{itemize}
+        \item \( m \): Número de recursos (aulas/profesores)
+        \item \( k \): Tamaño de la ventana
+    \end{itemize}
+    \item \textbf{Espacio}: \( O(k) \) para almacenar la ventana activa
+\end{itemize}
+
+\subsubsection*{Ejemplo de Aplicación}
+\begin{itemize}
+    \item \textbf{Evento}: Un profesor enfermo cancela sus clases del día.
+    \item \textbf{Replanificación}:
+    \begin{itemize}
+        \item Ventana deslizante: Próximas 24 horas
+        \item Reasignar aulas libres en ese período
+        \item Notificar cambios solo a estudiantes afectados
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Ventajas y Limitaciones}
+\begin{itemize}
+    \item \textbf{Ventajas}:
+    \begin{itemize}
+        \item Adaptabilidad a cambios en tiempo real
+        \item Bajo costo computacional por iteración
+    \end{itemize}
+    
+    \item \textbf{Limitaciones}:
+    \begin{itemize}
+        \item Soluciones subóptimas para horizontes largos
+        \item Sensibilidad a la elección de \( k \)
+    \end{itemize}
 \end{itemize}
 
 \section{Cotas Mínimas y Análisis de Complejidad}
